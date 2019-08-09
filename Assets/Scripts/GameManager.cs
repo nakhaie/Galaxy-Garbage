@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private IPlayerController _playerController;
     private IUiController _uiController;
     private IEnemiesController _enemiesController;
+
+    private Configurable _config;
     
 #region Unity Methods
 
@@ -19,6 +21,8 @@ public class GameManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
 
+        _config = Configurable.Instance;
+        
         _playerController  = FindObjectOfType<PlayerController>();
         _uiController      = FindObjectOfType<UiController>();
         _enemiesController = FindObjectOfType<EnemiesController>();
@@ -28,6 +32,9 @@ public class GameManager : MonoBehaviour
         MakeBlockOnBorders();
 
         _playerController.Init();
+
+        _playerController.EvnPlayerDefeated      += OnPlayerDefeated;
+        _enemiesController.EvnAsteroidTerminated += OnAsteroidTerminated;
     }
 
     private void Update()
@@ -80,8 +87,16 @@ public class GameManager : MonoBehaviour
 #endregion
     
 #region Event Handler
-    
-    
-    
+
+    private void OnAsteroidTerminated(EObstacleTerminator value)
+    {
+        _config.AddStatusCount(value.ToString(), 1);
+    }
+
+    private void OnPlayerDefeated(EPlayerDefeat value)
+    {
+        _config.AddStatusCount(value.ToString(), 1);
+    }
+
 #endregion
 }

@@ -1,4 +1,5 @@
-﻿using Modules;
+﻿using Delegates;
+using Modules;
 using Tools;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ namespace Controllers
 {
     public class PlayerController : MonoBehaviour, IPlayerController
     {
+        public event PlayerDefeatValue EvnPlayerDefeated;
+        
         [Header("Prefabs")]
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject bulletPrefab;
@@ -14,8 +17,8 @@ namespace Controllers
         [SerializeField] private Vector2 playerFirstPos;
 
         [Header("Properties")]
+        [SerializeField] private int   playerHp    = 1;
         [SerializeField] private float playerSpeed = 1.0f;
-
         [SerializeField] private float bulletSpeed = 1.0f;
         [SerializeField] private float bulletLife  = 3.0f;
         [SerializeField] private float shootDelay  = 0.1f;
@@ -23,13 +26,16 @@ namespace Controllers
         private Transform                 _player;
         private ObjectPool<IBulletModule> _bulletPool;
 
+        private int   _curHp;
         private float _shootTime;
-
+        
+        
     #region Interface Methods
 
         public void Init()
         {
             _shootTime = 0.0f;
+            _curHp = playerHp;
 
             _player = Instantiate(playerPrefab, playerFirstPos, Quaternion.identity).transform;
 
@@ -58,6 +64,18 @@ namespace Controllers
             }
         }
 
+        public void Respawn()
+        {
+            _shootTime = 0.0f;
+            _curHp     = playerHp;
+            _player.gameObject.SetActive(true);
+        }
+
+        public int GetHp()
+        {
+            return playerHp / _curHp;
+        }
+        
     #endregion
 
     #region Class Methods
@@ -68,11 +86,39 @@ namespace Controllers
         }
 
     #endregion
+        
+    #region Unity Methods
+
+        private void OnTriggerEnter(Collider other)
+        {
+            switch (other.tag)
+            {
+                case Tags.Asteroid:
+                    
+                    _curHp -= other.GetComponent<IObstacleModule>().ObstacleDestroyed();
+
+                    if (_curHp < 1)
+                    {
+                        EvnPlayerDefeated?.Invoke(EPlayerDefeat.DefeatedByAsteroid);
+                        Respawn();
+                    }
+                    
+                    break;
+            }
+            
+        }
+
+    #endregion
+        
     }
 
     public interface IPlayerController
     {
+        event PlayerDefeatValue EvnPlayerDefeated;
         void Init();
         void LocomotionUpdate();
+        void Respawn();
+        int GetHp();
+
     }
 }

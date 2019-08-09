@@ -36,7 +36,6 @@ namespace Modules
 
         private void OnTriggerEnter(Collider other)
         {
-
             switch (other.tag)
             {
                 case Tags.NormalBullet:
@@ -80,6 +79,12 @@ namespace Modules
             gameObject.SetActive(true);
         }
 
+        public int ObstacleDestroyed()
+        {
+            gameObject.SetActive(false);
+            return _curResistance;
+        }
+
     #endregion
         
         
@@ -89,6 +94,7 @@ namespace Modules
     {
         event DoubleStringValue EvnObstacleDestroy;
         void Drop(Vector3 pos, float speed);
+        int ObstacleDestroyed();
     }
 }
 

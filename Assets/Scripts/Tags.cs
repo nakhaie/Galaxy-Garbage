@@ -16,8 +16,13 @@ public static class ButtonKeyWord
     public const string Fire1      = "Fire1";
 }
 
-public enum ObstacleTerminator
+public enum EObstacleTerminator
 {
-    Dismiss      = 0,
-    NormalBullet = 1
+    TerminatedByDeadZone     = 0,
+    TerminatedByNormalBullet = 1
+}
+
+public enum EPlayerDefeat
+{
+    DefeatedByAsteroid      = 0
 }

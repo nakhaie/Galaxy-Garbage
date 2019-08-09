@@ -4,7 +4,7 @@ namespace Delegates
 {
     public delegate void NoneValue();
 
-    public delegate void BoolValue(bool value);
+    
 
     public delegate void IntValue(int value);
 
@@ -12,6 +12,8 @@ namespace Delegates
     
     public delegate void InstantiateValue(GameObject point);
 
-    public delegate void ObstacleTerminatedValue(ObstacleTerminator value);
+    public delegate void ObstacleTerminatedValue(EObstacleTerminator value);
+    
+    public delegate void PlayerDefeatValue(EPlayerDefeat value);
 
 }

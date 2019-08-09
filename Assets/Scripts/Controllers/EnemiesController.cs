@@ -57,25 +57,25 @@ namespace Controllers
 
         private void InitObstacle(GameObject obstacle)
         {
-            obstacle.GetComponent<IObstacleModule>().EvnObstacleDestroy += ObstacleTerminated;
+            obstacle.GetComponent<IObstacleModule>().EvnObstacleDestroy += OnObstacleDestroy;
         }
 
     #endregion
 
     #region Event Handler
 
-        private void ObstacleTerminated(string obstacleType, string terminatorType)
+        private void OnObstacleDestroy(string obstacleType, string terminatorType)
         {
             if (obstacleType == Tags.Asteroid)
             {
                 switch (terminatorType)
                 {
                     case Tags.NormalBullet:
-                        EvnAsteroidTerminated?.Invoke(ObstacleTerminator.NormalBullet);
+                        EvnAsteroidTerminated?.Invoke(EObstacleTerminator.TerminatedByNormalBullet);
                         break;
                     
                     case Tags.Respawn:
-                        EvnAsteroidTerminated?.Invoke(ObstacleTerminator.Dismiss);
+                        EvnAsteroidTerminated?.Invoke(EObstacleTerminator.TerminatedByDeadZone);
                         break;
                 }
             }
@@ -87,6 +87,7 @@ namespace Controllers
     
     public interface IEnemiesController
     {
+        event ObstacleTerminatedValue EvnAsteroidTerminated;
         void Init();
         void GeneratorUpdate();
 
