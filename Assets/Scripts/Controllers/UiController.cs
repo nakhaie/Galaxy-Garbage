@@ -1,49 +1,56 @@
 ﻿using Modules;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Controllers
 {
     public class UiController : MonoBehaviour, IUiController
     {
-
         [Header("Panels")]
         [SerializeField] private RectTransform achievementPanel;
-        [SerializeField] private RectTransform powerUpPanel;
+        [SerializeField] private RectTransform currencyPanel;
+        
+        [Header("Player")]
+        [SerializeField] private Image playerHealthBar;
 
         private IUiAchievementModule[] _achievementItem;
-
-    #region Unity Methods
+        private IUiCurrencyModule[]    _currencyItem;
         
-        private void Awake()
+
+    #region Interface Methods
+
+        public void Init(float playerHp)
         {
             _achievementItem = achievementPanel.GetComponentsInChildren<IUiAchievementModule>();
+            _currencyItem    = currencyPanel.GetComponentsInChildren<IUiCurrencyModule>();
 
             for (int i = 0; i < _achievementItem.Length; i++)
             {
                 _achievementItem[i].Init(i);
                 _achievementItem[i].EvnCollected += OnCollected;
             }
-        }
-        
-        // Start is called before the first frame update
-        void Start()
-        {
+
+            for (int i = 0; i < 3; i++)
+            {
+                _currencyItem[i].SetName(((ECurrencyType)i).ToString());
+            }
             
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
+            SetPlayerHealth(playerHp);
         }
         
-    #endregion
-
-    #region Interface Methods
-
         public float GetHudHorizontalOffset()
         {
-            return powerUpPanel.anchorMax.x;
+            return currencyPanel.anchorMax.x;
+        }
+
+        public void SetPlayerHealth(float value)
+        {
+            playerHealthBar.fillAmount = value;
+        }
+
+        public void SetCurrency(ECurrencyType currencyType, int value)
+        {
+            _currencyItem[(int)currencyType].SetAmount(value);
         }
 
     #endregion
@@ -61,7 +68,10 @@ namespace Controllers
     
     public interface IUiController
     {
+        void Init(float playerHp);
         float GetHudHorizontalOffset();
+        void SetPlayerHealth(float value);
+        void SetCurrency(ECurrencyType currencyType, int value);
     }
     
 }

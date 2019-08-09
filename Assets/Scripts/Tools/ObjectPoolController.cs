@@ -7,13 +7,12 @@ namespace Tools
 {
     public class ObjectPool<T>
     {
-        public PoolingProperty<T>[] PoolingArray => _objectList.ToArray();
+        public IList<PoolingProperty<T>> ObjectList { get; private set; }
 
-        public PoolingProperty<T> this[int i] => _objectList[i];
+        public PoolingProperty<T> this[int i] => ObjectList[i];
 
-        public int Length => _objectList.Count;
+        public int Length => ObjectList.Count;
 
-        private IList<PoolingProperty<T>> _objectList;
         private GameObject                _item;
         private Transform                 _parent;
 
@@ -47,7 +46,7 @@ namespace Tools
 
             ObjectPool<T> pool = new ObjectPool<T>
                                  {
-                                     _objectList = new List<PoolingProperty<T>>(), _item = item, _parent = parent
+                                     ObjectList = new List<PoolingProperty<T>>(), _item = item, _parent = parent
                                  };
 
 
@@ -58,7 +57,7 @@ namespace Tools
                 
                 instantiateCallback?.Invoke(obj);
             
-                obj.name = $"{pool._objectList.Count} {item.name}";
+                obj.name = $"{pool.ObjectList.Count} {item.name}";
  
                 PoolingProperty<T> property = new PoolingProperty<T>
                                               {
@@ -72,7 +71,7 @@ namespace Tools
                     property.Property.Parent = parent;
                 }
 
-                pool._objectList.Add(property);
+                pool.ObjectList.Add(property);
             }
 
             return pool;
@@ -80,7 +79,7 @@ namespace Tools
 
         public T GetObject(InstantiateValue instantiateCallback = null)
         {
-            foreach (var property in _objectList)
+            foreach (var property in ObjectList)
             {
                 if (property.Property.IsAvailable)
                 {
@@ -93,7 +92,7 @@ namespace Tools
             
             instantiateCallback?.Invoke(obj);
             
-            obj.name = $"{_objectList.Count} {_item.name}";
+            obj.name = $"{ObjectList.Count} {_item.name}";
 
             PoolingProperty<T> newProperty = new PoolingProperty<T>
                                              {
@@ -107,7 +106,7 @@ namespace Tools
                 newProperty.Property.Parent = _parent;
             }
         
-            _objectList.Add(newProperty);
+            ObjectList.Add(newProperty);
 
             return newProperty.ObjectRef;
         }

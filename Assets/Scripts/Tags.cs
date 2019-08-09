@@ -26,3 +26,10 @@ public enum EPlayerDefeat
 {
     DefeatedByAsteroid      = 0
 }
+
+public enum ECurrencyType
+{
+    Chip = 0,
+    Core = 1,
+    Bit  = 2
+}

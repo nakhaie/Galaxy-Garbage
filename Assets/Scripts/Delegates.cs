@@ -4,8 +4,6 @@ namespace Delegates
 {
     public delegate void NoneValue();
 
-    
-
     public delegate void IntValue(int value);
 
     public delegate void DoubleStringValue(string first, string second);
@@ -15,5 +13,9 @@ namespace Delegates
     public delegate void ObstacleTerminatedValue(EObstacleTerminator value);
     
     public delegate void PlayerDefeatValue(EPlayerDefeat value);
+    
+    public delegate void PlayerDamageValue(EPlayerDefeat enemyType, int amount);
+    
+    public delegate void PlayerHpValue(float amount);
 
 }

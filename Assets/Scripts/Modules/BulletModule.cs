@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Modules
 {
+    [RequireComponent(typeof(Rigidbody))]
     public class BulletModule : MonoBehaviour, IBulletModule
     {
         [SerializeField] private int damage = 1;

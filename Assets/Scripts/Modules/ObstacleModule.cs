@@ -4,11 +4,14 @@ using UnityEngine;
 
 namespace Modules
 {
+    [RequireComponent(typeof(Rigidbody))]
     public class ObstacleModule : MonoBehaviour, IObstacleModule
     {
         public event DoubleStringValue EvnObstacleDestroy;
-        
-        [SerializeField] private int maxResistance = 1;
+
+        [SerializeField] private Transform mainMesh;
+        [SerializeField] private int       maxResistance = 1;
+        [SerializeField] private float     rotationSpeed = 5;
 
         private Rigidbody _rigidbody;
         private float     _speed;
@@ -32,6 +35,7 @@ namespace Modules
         private void Update()
         {
             _rigidbody.velocity = Vector3.down * _speed;
+            mainMesh.Rotate(_speed * Vector3.left, Space.World);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -73,6 +77,7 @@ namespace Modules
         
         public void Drop(Vector3 pos, float speed)
         {
+            transform.Rotate(Vector3.forward * Random.Range(0,300));
             transform.position = pos;
             _speed             = speed;
             _curResistance     = maxResistance;

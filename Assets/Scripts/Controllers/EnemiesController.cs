@@ -51,6 +51,14 @@ namespace Controllers
             _generateArea.x -= 1;
         }
 
+        public void ClearArea()
+        {
+            foreach (PoolingProperty<IObstacleModule> obstacle in _obstaclePool.ObjectList)
+            {
+                obstacle.ObjectRef.ObstacleDestroyed();
+            }
+        }
+
     #endregion
         
     #region Class Methods
@@ -92,5 +100,6 @@ namespace Controllers
         void GeneratorUpdate();
 
         void SetGeneratorArea(Vector2 area);
+        void ClearArea();
     }
 }

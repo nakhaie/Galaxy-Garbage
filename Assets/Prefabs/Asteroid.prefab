@@ -152,4 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776d78bc7851eb54aae517710464e6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMesh: {fileID: 4821648459750157166}
   maxResistance: 2
+  rotationSpeed: 5

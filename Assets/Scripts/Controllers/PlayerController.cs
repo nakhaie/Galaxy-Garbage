@@ -8,7 +8,8 @@ namespace Controllers
     public class PlayerController : MonoBehaviour, IPlayerController
     {
         public event PlayerDefeatValue EvnPlayerDefeated;
-        
+        public event PlayerHpValue EvnPlayerHpChange;
+
         [Header("Prefabs")]
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject bulletPrefab;
@@ -23,9 +24,19 @@ namespace Controllers
         [SerializeField] private float bulletLife  = 3.0f;
         [SerializeField] private float shootDelay  = 0.1f;
 
-        private Transform                 _player;
+        private IPlayerModule             _player;
         private ObjectPool<IBulletModule> _bulletPool;
 
+        private int CurHp
+        {
+            get => _curHp;
+            set
+            {
+                _curHp = Mathf.Max(0 , value);
+                EvnPlayerHpChange?.Invoke(GetHp());
+            }
+        }
+        
         private int   _curHp;
         private float _shootTime;
         
@@ -35,26 +46,30 @@ namespace Controllers
         public void Init()
         {
             _shootTime = 0.0f;
-            _curHp = playerHp;
+            CurHp = playerHp;
 
-            _player = Instantiate(playerPrefab, playerFirstPos, Quaternion.identity).transform;
+            _player = Instantiate(playerPrefab, playerFirstPos, Quaternion.identity).GetComponent<IPlayerModule>();
 
             _bulletPool = ObjectPool<IBulletModule>.InstantiatePool(bulletPrefab, 30, true, InitBullet);
+            
+            _player.Init();
+            
+            _player.EvnPlayerDamaged += OnPlayerDamaged;
         }
 
         public void LocomotionUpdate()
         {
-            _player.GetComponent<Rigidbody>().velocity = new Vector3(Input.GetAxis(ButtonKeyWord.Horizontal),
-                                                                     Input.GetAxis(ButtonKeyWord.Vertical),
-                                                                     0.0f) * playerSpeed;
-
+            _player.SetVelocity(new Vector3(Input.GetAxis(ButtonKeyWord.Horizontal),
+                                            Input.GetAxis(ButtonKeyWord.Vertical),
+                                            0.0f) * playerSpeed);
+            
             if (Input.GetButton(ButtonKeyWord.Fire1))
             {
                 _shootTime -= Time.deltaTime;
 
                 if (_shootTime < 0)
                 {
-                    _bulletPool.GetObject(InitBullet).Shoot(_player.position);
+                    _bulletPool.GetObject(InitBullet).Shoot(_player.GetPosition());
                     _shootTime = shootDelay;
                 }
             }
@@ -67,13 +82,13 @@ namespace Controllers
         public void Respawn()
         {
             _shootTime = 0.0f;
-            _curHp     = playerHp;
-            _player.gameObject.SetActive(true);
+            CurHp      = playerHp;
+            _player.SpawnIn(playerFirstPos);
         }
 
-        public int GetHp()
+        public float GetHp()
         {
-            return playerHp / _curHp;
+            return CurHp / (float)playerHp;
         }
         
     #endregion
@@ -86,39 +101,30 @@ namespace Controllers
         }
 
     #endregion
-        
-    #region Unity Methods
 
-        private void OnTriggerEnter(Collider other)
+    #region Event Handler
+
+        private void OnPlayerDamaged(EPlayerDefeat enemyType, int amount)
         {
-            switch (other.tag)
-            {
-                case Tags.Asteroid:
-                    
-                    _curHp -= other.GetComponent<IObstacleModule>().ObstacleDestroyed();
+            CurHp -= amount;
 
-                    if (_curHp < 1)
-                    {
-                        EvnPlayerDefeated?.Invoke(EPlayerDefeat.DefeatedByAsteroid);
-                        Respawn();
-                    }
-                    
-                    break;
+            if (CurHp < 1)
+            {
+                EvnPlayerDefeated?.Invoke(enemyType);
             }
-            
         }
 
     #endregion
-        
     }
 
     public interface IPlayerController
     {
         event PlayerDefeatValue EvnPlayerDefeated;
+        event PlayerHpValue EvnPlayerHpChange;
         void Init();
         void LocomotionUpdate();
         void Respawn();
-        int GetHp();
+        float GetHp();
 
     }
 }

@@ -11,6 +11,10 @@ public class Configurable
 {
 
     private readonly Dictionary<string, int> _statusCount = new Dictionary<string, int>();
+
+    private int _chip;
+    private int _core;
+    private int _bit;
     
     private const string StatusDataKey = "StatusData";
     
@@ -35,6 +39,7 @@ public class Configurable
     private void LoadAllData()
     {
         LoadStatusData();
+        LoadCurrencies();
     }
     
     private void LoadStatusData()
@@ -53,11 +58,19 @@ public class Configurable
             }
         }
     }
+
+    private void LoadCurrencies()
+    {
+        _chip = PlayerPrefs.GetInt(ECurrencyType.Chip.ToString(), 0);
+        _core = PlayerPrefs.GetInt(ECurrencyType.Core.ToString(), 0);
+        _bit = PlayerPrefs.GetInt(ECurrencyType.Bit.ToString(), 0);
+    }
     
     //Save Data//////////////////////////////////////////////////////
     public void SaveAllData()
     {
         SaveStatusData();
+        SaveCurrencies();
         
         PlayerPrefs.Save();
     }
@@ -81,6 +94,13 @@ public class Configurable
         PlayerPrefs.SetString(StatusDataKey, statusData);
     }
 
+    public void SaveCurrencies()
+    {
+        PlayerPrefs.SetInt(ECurrencyType.Chip.ToString(), _chip);
+        PlayerPrefs.SetInt(ECurrencyType.Core.ToString(), _core);
+        PlayerPrefs.SetInt(ECurrencyType.Bit.ToString(), _bit);
+    }
+    
 #endregion
     
 #region Setter & Getter
@@ -96,7 +116,67 @@ public class Configurable
             _statusCount.Add(state, point);
         }
         
-        Debug.Log($"{state}: {_statusCount[state]}");
+        //Debug.Log($"{state}: {_statusCount[state]}");
+    }
+
+    public int GetCurrency(ECurrencyType currencyType)
+    {
+        switch (currencyType)
+        {
+            case ECurrencyType.Chip:
+                return _chip;
+            
+            case ECurrencyType.Core:
+                return _core;
+            
+            case ECurrencyType.Bit:
+                return _bit;
+            
+            default:
+                return -1;
+        }
+    }
+    
+    public int GiveCurrency(ECurrencyType currencyType, int amount)
+    {
+        switch (currencyType)
+        {
+            case ECurrencyType.Chip:
+                _chip += amount;
+                return _chip;
+            
+            case ECurrencyType.Core:
+                _core += amount;
+                return _core;
+            
+            case ECurrencyType.Bit:
+                _bit += amount;
+                return _bit;
+            
+            default:
+                return -1;
+        }
+    }
+    
+    public int TakeCurrency(ECurrencyType currencyType, int amount)
+    {
+        switch (currencyType)
+        {
+            case ECurrencyType.Chip:
+                _chip -= amount;
+                return _chip;
+            
+            case ECurrencyType.Core:
+                _core -= amount;
+                return _core;
+            
+            case ECurrencyType.Bit:
+                _bit -= amount;
+                return _bit;
+            
+            default:
+                return -1;
+        }
     }
     
 #endregion

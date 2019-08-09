@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Camera cameraController;
 
-    private IPlayerController _playerController;
-    private IUiController _uiController;
+    private IPlayerController  _playerController;
+    private IUiController      _uiController;
     private IEnemiesController _enemiesController;
 
     private Configurable _config;
@@ -32,7 +32,15 @@ public class GameManager : MonoBehaviour
         MakeBlockOnBorders();
 
         _playerController.Init();
+        
+        _uiController.Init(_playerController.GetHp());
 
+        for (int i = 0; i < 3; i++)
+        {
+            _uiController.SetCurrency((ECurrencyType)i, _config.GetCurrency((ECurrencyType)i));
+        }
+
+        _playerController.EvnPlayerHpChange      += OnPlayerHpChange;
         _playerController.EvnPlayerDefeated      += OnPlayerDefeated;
         _enemiesController.EvnAsteroidTerminated += OnAsteroidTerminated;
     }
@@ -96,6 +104,13 @@ public class GameManager : MonoBehaviour
     private void OnPlayerDefeated(EPlayerDefeat value)
     {
         _config.AddStatusCount(value.ToString(), 1);
+        _enemiesController.ClearArea();
+        _playerController.Respawn();
+    }
+    
+    private void OnPlayerHpChange(float amount)
+    {
+        _uiController.SetPlayerHealth(amount);
     }
 
 #endregion
