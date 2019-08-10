@@ -9,14 +9,16 @@ using UnityEditor;
 
 public class Configurable
 {
-
     private readonly Dictionary<string, int> _statusCount = new Dictionary<string, int>();
 
+    private readonly Dictionary<string, int> _achievementLevel = new Dictionary<string, int>();
+    
     private int _chip;
     private int _core;
     private int _bit;
-    
-    private const string StatusDataKey = "StatusData";
+
+    private const string StatusDataKey      = "StatusData";
+    private const string AchievementDataKey = "AchievementData";
     
 #region Initialize
 
@@ -39,6 +41,7 @@ public class Configurable
     private void LoadAllData()
     {
         LoadStatusData();
+        LoadAchievementData();
         LoadCurrencies();
     }
     
@@ -48,13 +51,30 @@ public class Configurable
         
         if (!string.IsNullOrEmpty(statusData))
         {
-            StatusSaveData statusSaveData = JsonUtility.FromJson<StatusSaveData>(statusData);
+            DicSaveData statusSaveData = JsonUtility.FromJson<DicSaveData>(statusData);
 
             _statusCount.Clear();
             
-            foreach (StatusSaveUnit unit in statusSaveData.statusSaveUnits)
+            foreach (DicSaveUnit unit in statusSaveData.dicSaveUnits)
             {
-                _statusCount.Add(unit.state, unit.point);
+                _statusCount.Add(unit.key, unit.value);
+            }
+        }
+    }
+    
+    private void LoadAchievementData()
+    {
+        string achievementData = PlayerPrefs.GetString(AchievementDataKey, string.Empty);
+        
+        if (!string.IsNullOrEmpty(achievementData))
+        {
+            DicSaveData achievementSaveData = JsonUtility.FromJson<DicSaveData>(achievementData);
+
+            _achievementLevel.Clear();
+            
+            foreach (DicSaveUnit unit in achievementSaveData.dicSaveUnits)
+            {
+                _achievementLevel.Add(unit.key, unit.value);
             }
         }
     }
@@ -71,6 +91,7 @@ public class Configurable
     {
         SaveStatusData();
         SaveCurrencies();
+        SaveAchievementData();
         
         PlayerPrefs.Save();
     }
@@ -81,17 +102,36 @@ public class Configurable
         
         if (_statusCount.Count > 0)
         {
-            List<StatusSaveUnit> status = new List<StatusSaveUnit>();
+            List<DicSaveUnit> status = new List<DicSaveUnit>();
 
             foreach (KeyValuePair<string, int> state in _statusCount)
             {
-                status.Add(new StatusSaveUnit(state));
+                status.Add(new DicSaveUnit(state));
             }
 
-            statusData = JsonUtility.ToJson(new StatusSaveData(status.ToArray()));
+            statusData = JsonUtility.ToJson(new DicSaveData(status.ToArray()));
         }
 
         PlayerPrefs.SetString(StatusDataKey, statusData);
+    }
+    
+    public void SaveAchievementData()
+    {
+        string achievementData = string.Empty;
+        
+        if (_achievementLevel.Count > 0)
+        {
+            List<DicSaveUnit> achievement = new List<DicSaveUnit>();
+
+            foreach (KeyValuePair<string, int> state in _achievementLevel)
+            {
+                achievement.Add(new DicSaveUnit(state));
+            }
+
+            achievementData = JsonUtility.ToJson(new DicSaveData(achievement.ToArray()));
+        }
+
+        PlayerPrefs.SetString(AchievementDataKey, achievementData);
     }
 
     public void SaveCurrencies()
@@ -105,7 +145,7 @@ public class Configurable
     
 #region Setter & Getter
 
-    public void AddStatusCount(string state, int point)
+    public int AddStatusCount(string state, int point)
     {
         if (_statusCount.ContainsKey(state))
         {
@@ -115,10 +155,54 @@ public class Configurable
         {
             _statusCount.Add(state, point);
         }
-        
-        //Debug.Log($"{state}: {_statusCount[state]}");
+
+        return _statusCount[state];
     }
 
+    public void TakeStatusPoints(string state, int amount)
+    {
+        if (_statusCount.ContainsKey(state))
+        {
+            _statusCount[state] -= amount;
+        }
+        else
+        {
+            _statusCount.Add(state, 0);
+        }
+    }
+    
+    public int GetStatusPoint(string state)
+    {
+        if (!_statusCount.ContainsKey(state))
+        {
+            _statusCount.Add(state, 0);
+        }
+
+        return _statusCount[state];
+    }
+
+    public void AddAchievementLevel(string achieveName)
+    {
+        if (_achievementLevel.ContainsKey(achieveName))
+        {
+            _achievementLevel[achieveName]++;
+        }
+        else
+        {
+            _achievementLevel.Add(achieveName, 1);
+        }
+    }
+
+    public int GetAchievementLevel(string achieveName)
+    {
+        if (!_achievementLevel.ContainsKey(achieveName))
+        {
+            _achievementLevel.Add(achieveName, 0);
+        }
+
+        return _achievementLevel[achieveName];
+    }
+    
     public int GetCurrency(ECurrencyType currencyType)
     {
         switch (currencyType)
@@ -184,32 +268,32 @@ public class Configurable
 #region Classes
 
     [System.Serializable]
-    public class StatusSaveData
+    public class DicSaveData
     {
-        public StatusSaveUnit[] statusSaveUnits;
+        public DicSaveUnit[] dicSaveUnits;
 
-        public StatusSaveData(StatusSaveUnit[] statusSaveUnits)
+        public DicSaveData(DicSaveUnit[] dicSaveUnits)
         {
-            this.statusSaveUnits = statusSaveUnits;
+            this.dicSaveUnits = dicSaveUnits;
         }
     }
   
     [System.Serializable]
-    public class StatusSaveUnit
+    public class DicSaveUnit
     {
-        public string state;
-        public int point;
+        public string key;
+        public int value;
 
-        public StatusSaveUnit(string state, int point)
+        public DicSaveUnit(string key, int value)
         {
-            this.state = state;
-            this.point = point;
+            this.key = key;
+            this.value = value;
         }
         
-        public StatusSaveUnit(KeyValuePair<string, int> keyValuePair)
+        public DicSaveUnit(KeyValuePair<string, int> keyValuePair)
         {
-            state = keyValuePair.Key;
-            point = keyValuePair.Value;
+            key = keyValuePair.Key;
+            value = keyValuePair.Value;
         }
     }
 

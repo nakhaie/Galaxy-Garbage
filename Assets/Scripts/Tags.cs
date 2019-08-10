@@ -16,15 +16,11 @@ public static class ButtonKeyWord
     public const string Fire1      = "Fire1";
 }
 
-public enum EObstacleTerminator
+public enum EStatusType
 {
-    TerminatedByDeadZone     = 0,
-    TerminatedByNormalBullet = 1
-}
-
-public enum EPlayerDefeat
-{
-    DefeatedByAsteroid      = 0
+    AsteroidTerminatedByDeadZone     = 0,
+    AsteroidTerminatedByNormalBullet = 1,
+    PlayerDefeatedByAsteroid         = 2
 }
 
 public enum ECurrencyType

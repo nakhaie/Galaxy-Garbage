@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9bfe4cb2df15ac45a309b59e70aee57, type: 3}
+  m_Name: AchievementData
+  m_EditorClassIdentifier: 
+  achievementProperties:
+  - achieveName: Clear The Road
+    description: Destroy {0} Asteroids.
+    statusType: 1
+    points:
+    - point: 2
+      rewardType: 0
+      reward: 10
+    - point: 4
+      rewardType: 0
+      reward: 20
+    - point: 8
+      rewardType: 0
+      reward: 40
+    - point: 16
+      rewardType: 0
+      reward: 80
+    - point: 32
+      rewardType: 0
+      reward: 160
+    - point: 128
+      rewardType: 0
+      reward: 320
+    - point: 256
+      rewardType: 0
+      reward: 1280
+    - point: 512
+      rewardType: 0
+      reward: 2560
+    - point: 1024
+      rewardType: 0
+      reward: 5120
+    - point: 2048
+      rewardType: 0
+      reward: 10240
+  - achieveName: Give Away
+    description: Dodge {0} Asteroids.
+    statusType: 0
+    points:
+    - point: 10
+      rewardType: 1
+      reward: 100
+    - point: 50
+      rewardType: 1
+      reward: 500
+    - point: 100
+      rewardType: 1
+      reward: 1000
+    - point: 250
+      rewardType: 1
+      reward: 2500
+    - point: 400
+      rewardType: 1
+      reward: 4000
+    - point: 600
+      rewardType: 1
+      reward: 6000
+    - point: 900
+      rewardType: 1
+      reward: 9000
+    - point: 1200
+      rewardType: 1
+      reward: 12000
+    - point: 1500
+      rewardType: 1
+      reward: 15000
+    - point: 2000
+      rewardType: 1
+      reward: 20000
+  - achieveName: Take Your Life
+    description: Die {0} Times
+    statusType: 2
+    points:
+    - point: 2
+      rewardType: 2
+      reward: 100
+    - point: 5
+      rewardType: 2
+      reward: 250
+    - point: 8
+      rewardType: 2
+      reward: 400
+    - point: 12
+      rewardType: 2
+      reward: 600
+    - point: 16
+      rewardType: 2
+      reward: 800
+    - point: 20
+      rewardType: 2
+      reward: 1000
+    - point: 25
+      rewardType: 2
+      reward: 1250
+    - point: 30
+      rewardType: 2
+      reward: 1500
+    - point: 36
+      rewardType: 2
+      reward: 1800
+    - point: 50
+      rewardType: 2
+      reward: 2500

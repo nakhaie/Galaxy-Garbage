@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using Scriptable;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -40,10 +41,14 @@ public class GameManager : MonoBehaviour
             _uiController.SetCurrency((ECurrencyType)i, _config.GetCurrency((ECurrencyType)i));
         }
 
+        SetupAchievementItems();
+
         _playerController.EvnPlayerHpChange      += OnPlayerHpChange;
         _playerController.EvnPlayerDefeated      += OnPlayerDefeated;
         _enemiesController.EvnAsteroidTerminated += OnAsteroidTerminated;
+        _uiController.EvnAchievementDone         += OnAchievementDone;
     }
+
 
     private void Update()
     {
@@ -92,18 +97,36 @@ public class GameManager : MonoBehaviour
         _enemiesController.SetGeneratorArea(upSideArea);
     }
 
+    private void SetupAchievementItems()
+    {
+        AchievementProperty[] achievementProperties =
+            Resources.Load<AchievementData>(AchievementData.ResourcePath).achievementProperties;
+
+        for (int index = 0; index < achievementProperties.Length; index++)
+        {
+            AchievementProperty property = achievementProperties[index];
+            
+            int achieveLevel = _config.GetAchievementLevel(property.achieveName);
+            
+            _uiController.SetAchievementItem(index, property.achieveName, property.description, property.statusType,
+                                             property.points[achieveLevel].rewardType.ToString(),
+                                             property.points[achieveLevel].reward, achieveLevel,
+                                             property.points[achieveLevel].point,
+                                             _config.GetStatusPoint(property.statusType.ToString()));
+        }
+    }
 #endregion
     
 #region Event Handler
 
-    private void OnAsteroidTerminated(EObstacleTerminator value)
+    private void OnAsteroidTerminated(EStatusType state)
     {
-        _config.AddStatusCount(value.ToString(), 1);
+        _uiController.SetAchievementPoint(state, _config.AddStatusCount(state.ToString(), 1));
     }
 
-    private void OnPlayerDefeated(EPlayerDefeat value)
+    private void OnPlayerDefeated(EStatusType state)
     {
-        _config.AddStatusCount(value.ToString(), 1);
+        _uiController.SetAchievementPoint(state,_config.AddStatusCount(state.ToString(), 1));
         _enemiesController.ClearArea();
         _playerController.Respawn();
     }
@@ -111,6 +134,36 @@ public class GameManager : MonoBehaviour
     private void OnPlayerHpChange(float amount)
     {
         _uiController.SetPlayerHealth(amount);
+    }
+    
+    private void OnAchievementDone(int index)
+    {
+        AchievementProperty achievementProperty =
+            Resources.Load<AchievementData>(AchievementData.ResourcePath).achievementProperties[index];
+
+        int achieveLevel = _config.GetAchievementLevel(achievementProperty.achieveName);
+
+        _config.TakeStatusPoints(achievementProperty.statusType.ToString(),
+                                 achievementProperty.points[achieveLevel].point);
+        
+        _config.AddAchievementLevel(achievementProperty.achieveName);
+
+        _uiController.SetCurrency(achievementProperty.points[achieveLevel].rewardType,
+                                  _config.GiveCurrency(achievementProperty.points[achieveLevel].rewardType,
+                                                              achievementProperty.points[achieveLevel].reward));
+        
+        achieveLevel = _config.GetAchievementLevel(achievementProperty.achieveName);
+        
+        _uiController.SetAchievementItem(index, achievementProperty.achieveName, achievementProperty.description,
+                                         achievementProperty.statusType,
+                                         achievementProperty.points[achieveLevel].rewardType.ToString(),
+                                         achievementProperty.points[achieveLevel].reward,
+                                         achieveLevel,
+                                         achievementProperty.points[achieveLevel].point,
+                                         _config.GetStatusPoint(achievementProperty.statusType.ToString()));
+        
+        _uiController.SetAchievementPoint(achievementProperty.statusType,
+                                          _config.GetStatusPoint(achievementProperty.statusType.ToString()));
     }
 
 #endregion

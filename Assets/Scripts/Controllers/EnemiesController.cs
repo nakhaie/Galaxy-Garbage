@@ -79,11 +79,11 @@ namespace Controllers
                 switch (terminatorType)
                 {
                     case Tags.NormalBullet:
-                        EvnAsteroidTerminated?.Invoke(EObstacleTerminator.TerminatedByNormalBullet);
+                        EvnAsteroidTerminated?.Invoke(EStatusType.AsteroidTerminatedByNormalBullet);
                         break;
                     
                     case Tags.Respawn:
-                        EvnAsteroidTerminated?.Invoke(EObstacleTerminator.TerminatedByDeadZone);
+                        EvnAsteroidTerminated?.Invoke(EStatusType.AsteroidTerminatedByDeadZone);
                         break;
                 }
             }

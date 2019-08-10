@@ -248,6 +248,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6260243183344831307, guid: 634fd68dd7cac0344a07a8a1788a5b19,
+        type: 3}
+      propertyPath: m_Text
+      value: Description
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 634fd68dd7cac0344a07a8a1788a5b19, type: 3}
 --- !u!224 &28552310 stripped
@@ -1429,7 +1434,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570100185}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8, z: 0}
+  m_LocalPosition: {x: 0, y: -6.5, z: 0}
   m_LocalScale: {x: 30, y: 1, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1556,6 +1561,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260243183344831307, guid: 634fd68dd7cac0344a07a8a1788a5b19,
+        type: 3}
+      propertyPath: m_Text
+      value: Description
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 634fd68dd7cac0344a07a8a1788a5b19, type: 3}
@@ -2365,6 +2375,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260243183344831307, guid: 634fd68dd7cac0344a07a8a1788a5b19,
+        type: 3}
+      propertyPath: m_Text
+      value: Description
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 634fd68dd7cac0344a07a8a1788a5b19, type: 3}

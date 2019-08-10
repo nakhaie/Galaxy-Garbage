@@ -20,6 +20,7 @@ namespace Modules
         private const string CounterStyle = "{0} / {1}";
         private const string RewardStyle  = "{0} X{1}";
 
+        private EStatusType _statusType;
         private int _index;
 
     #region Interface Methods
@@ -40,25 +41,10 @@ namespace Modules
             descriptionField.text = string.Format(description, maxPoint);
         }
         
-        public void SetCounter(int curPoint, int maxPoint)
+        public void SetCounter(int curPoint)
         {
-            counterField.text = string.Format(CounterStyle, curPoint, maxPoint);
-        }
-        
-        public void SetReward(string typeName, int amount)
-        {
-            rewardField.text = string.Format(RewardStyle, typeName, amount);
-        }
-
-        public void SetPointBar(int maxPoint)
-        {
-            pointBar.maxValue = maxPoint;
-            pointBar.value = 0;
-            collectBtn.interactable = false;
-        }
-
-        public void SetPointBarValue(int curPoint)
-        {
+            counterField.text = string.Format(CounterStyle, curPoint, pointBar.maxValue);
+            
             if (pointBar.maxValue <= curPoint)
             {
                 curPoint = (int)pointBar.maxValue;
@@ -67,6 +53,29 @@ namespace Modules
             }
 
             pointBar.value = curPoint;
+        }
+        
+        public void SetReward(string rewardType, int amount)
+        {
+            rewardField.text = string.Format(RewardStyle, rewardType, amount);
+        }
+
+        public void SetMaxPoint(int maxPoint)
+        {
+            pointBar.maxValue = maxPoint;
+            pointBar.value = 0;
+            collectBtn.interactable = false;
+        }
+        
+
+        public void SetStatusType(EStatusType statusType)
+        {
+            _statusType = statusType;
+        }
+
+        public EStatusType GetStatusType()
+        {
+            return _statusType;
         }
         
     #endregion
@@ -88,9 +97,11 @@ namespace Modules
         void Init(int index);
         void SetName(string achieveName, int curLevel);
         void SetDescription(string description, int maxPoint);
-        void SetCounter(int curPoint, int maxPoint);
-        void SetReward(string typeName, int amount);
-        void SetPointBar(int maxPoint);
-        void SetPointBarValue(int curPoint);
+
+        void SetReward(string rewardType, int amount);
+        void SetMaxPoint(int maxPoint);
+        void SetCounter(int curPoint);
+        void SetStatusType(EStatusType statusType);
+        EStatusType GetStatusType();
     }
 }

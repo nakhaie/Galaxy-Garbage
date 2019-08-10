@@ -104,7 +104,7 @@ namespace Controllers
 
     #region Event Handler
 
-        private void OnPlayerDamaged(EPlayerDefeat enemyType, int amount)
+        private void OnPlayerDamaged(EStatusType enemyType, int amount)
         {
             CurHp -= amount;
 

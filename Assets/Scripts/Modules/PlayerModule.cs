@@ -22,7 +22,7 @@ namespace Modules
                     
                     int damage = other.GetComponent<IObstacleModule>().ObstacleDestroyed();
                     
-                    EvnPlayerDamaged?.Invoke(EPlayerDefeat.DefeatedByAsteroid,damage);
+                    EvnPlayerDamaged?.Invoke(EStatusType.PlayerDefeatedByAsteroid,damage);
                     
                     break;
             }

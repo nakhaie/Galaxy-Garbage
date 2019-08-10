@@ -10,11 +10,11 @@ namespace Delegates
     
     public delegate void InstantiateValue(GameObject point);
 
-    public delegate void ObstacleTerminatedValue(EObstacleTerminator value);
+    public delegate void ObstacleTerminatedValue(EStatusType state);
     
-    public delegate void PlayerDefeatValue(EPlayerDefeat value);
+    public delegate void PlayerDefeatValue(EStatusType state);
     
-    public delegate void PlayerDamageValue(EPlayerDefeat enemyType, int amount);
+    public delegate void PlayerDamageValue(EStatusType state, int amount);
     
     public delegate void PlayerHpValue(float amount);
 
